@@ -1,0 +1,790 @@
+package libraries;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+import org.openqa.selenium.support.ui.Select;
+import org.apache.bcel.Repository;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.log4j.Logger;
+import org.apache.poi.ss.formula.functions.Days360;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import org.apache.bcel.generic.Select;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.JavascriptException;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.Test;
+import org.testng.util.Strings;
+import tests.Test1;
+
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.itextpdf.text.log.SysoCounter;
+import com.relevantcodes.extentreports.ExtentReports;
+
+import tests.Test1;
+import tests.Test2;
+import tests.Test3;
+import tests.Test4;
+import tests.Test5;
+import libraries.Project;
+import libraries.Constants;
+import net.bytebuddy.asm.Advice.Enter;
+import net.sourceforge.htmlunit.corejs.javascript.JavaScriptException;
+import java.time.Duration;
+
+@SuppressWarnings("unused")
+public class BusinessRules {
+	static CommonLib common = new CommonLib();
+	Constants constants = new Constants();
+	//Project project=new Project();
+	static ReadExcel excel = new ReadExcel();
+	Data_Interaction data_Interaction = new Data_Interaction();
+	public static ObjectRepository repository = new ObjectRepository();
+	public static String strTextFromHeader;
+	public static String strApplicationStatus;
+	public static ExtentReports report;
+
+	public void SelectBR(RemoteWebDriver driver, String strConfig, String BusinessRule, String Value) {
+		switch (BusinessRule) {
+		case "BR_verifyElementsDisplayed":
+	//		homePageElementsVerify(driver, strConfig);
+		case "BR_calculatorverfiy":
+			//calculator(driver, strConfig);
+
+
+		default:
+			CommonLib.getLogger(strConfig).info(BusinessRule + " is not yet implemented.");
+		}
+	}
+
+	public void setStopTestCaseValue(RemoteWebDriver driver, String strConfig, String value){
+		if(value.equalsIgnoreCase("Yes")){
+			switch(strConfig){
+			case "Config1":
+				Test1.blnStopCurrentTestCase = true;
+				break;
+			case "Config2":
+				Test2.blnStopCurrentTestCase = true;
+				break;
+			case "Config3":
+				Test3.blnStopCurrentTestCase = true;
+				break;
+			case "Config4":
+				Test4.blnStopCurrentTestCase = true;
+				break;
+			case "Config5":
+				Test5.blnStopCurrentTestCase = true;
+				break;
+			default:
+				Test1.blnStopCurrentTestCase = true;
+			}
+		}
+	}
+	
+	public static void loginRiskTracker(RemoteWebDriver driver, String strConfig, String strUserName,
+			String strPassword) {
+
+		Project.ExecuteRow(driver, strConfig, "BTN_Login_IntegroAccount", "Click");
+
+		Project.ExecuteRow(driver, strConfig, "TXT_Login_IntegroUsername", strUserName);
+
+		Project.ExecuteRow(driver, strConfig, "BTN_Login_IntegroNext", "Click");
+
+		Project.ExecuteRow(driver, strConfig, "TXT_Login_IntegroPassword", CommonLib.DecryptPassword(strPassword));
+
+		Project.ExecuteRow(driver, strConfig, "BTN_SignIn", "Click");
+
+		Boolean isStaySignedInPagePresent = ObjectRepository.GetObjects(driver, strConfig, "LBL_Stay_SignedIn").size() > 0;
+
+		if (isStaySignedInPagePresent) {
+			Project.ExecuteRow(driver, strConfig, "BTN_Stay_SignedIn_NO", "Click");
+		}
+
+	}
+	
+	public static void verifyHomePageDefaultElements(RemoteWebDriver driver, String strConfig) {
+
+		//Wait for 3 links to be Clickable: User Support, Settings and Log Out to be clickable
+		CommonLib.WaitForElement(driver, strConfig, "LN_UserSupport");
+		CommonLib.WaitForElement(driver, strConfig, "LN_Settings");
+		CommonLib.WaitForElement(driver, strConfig, "LN_Logout_IntegroAccount");
+
+	}
+	
+	public static void verifyAccountHandlerHomePage(RemoteWebDriver driver, String strConfig) {
+		
+	}
+
+	public static void verifyAdministratorHomePage(RemoteWebDriver driver, String strConfig) {
+		try {
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+		wait.until(ExpectedConditions
+				.visibilityOfElementLocated(By.xpath("//*[contains(@id,'Title')]/h1[text()='Admin Dashboard']")));
+		}
+		
+		catch (NoSuchElementException e) {
+			TestReporter.Error(driver, strConfig, "Exception Thrown",
+					"NoSuchElementException on- WaitForElement: Title Admin Dashboard ");
+		} catch (StaleElementReferenceException e) {
+			TestReporter.Error(driver, strConfig, "Exception Thrown",
+					"StaleElementReferenceException on- WaitForElement: Title Admin Dashboard ");
+		} catch (JavascriptException e) {
+			TestReporter.Error(driver, strConfig, "Exception Thrown",
+					"JavascriptException on- WaitForElement: Title Admin Dashboard ");
+		} catch (TimeoutException e) {
+			TestReporter.Warning(driver, strConfig, "Exception Thrown",
+					"TimeoutException on- WaitForElement: Title Admin Dashboard ");
+		} catch (NullPointerException e) {
+			TestReporter.Error(driver, strConfig, "Exception Thrown",
+					"NullPointerException on- WaitForElement: Title Admin Dashboard ");
+		} catch (IllegalArgumentException e) {
+			TestReporter.Error(driver, strConfig, "Exception Thrown",
+					"IllegalArgumentException on- WaitForElement: Title Admin Dashboard ");
+		}
+
+	}
+
+	public static void verifySeniorInsuranceTechHomePage(RemoteWebDriver driver, String strConfig) {
+
+
+
+	}
+
+	public static void verifyOperationsTeamLeadHomePage(RemoteWebDriver driver, String strConfig) {
+
+
+
+	}
+
+	public static void verifyAsOperationsTechHomePage(RemoteWebDriver driver, String strConfig) {
+
+
+
+	}
+
+	public static void verifyAdministrationsTeamHomePage(RemoteWebDriver driver, String strConfig) {
+
+
+
+	}
+	
+	public static void verifyRiskOverviewTabDefaultPopulatedFields(RemoteWebDriver driver, String strConfig) {
+		
+	}
+	
+	public static void verifyRiskOverviewTabMandatoryFields(RemoteWebDriver driver, String strConfig) {
+		
+	}
+	
+	
+	public static String createNewRisk(RemoteWebDriver driver, String strConfig) {
+		String riskTrackerRefNum = null;
+		
+		CommonLib.getLogger(strConfig).info("Inside createNewRisk");
+		
+		CommonLib.WaitForElement(driver, strConfig, "LN_MenuItem_RiskOverview");
+
+		LinkedHashMap<String, String> riskOverviewTabData = RTData.getRiskOverviewData();
+		
+		
+		// NEW/RENEWALCLASSIFICATION gadbad
+		// ---- Select New/Renewal Classification Option from the Dropdown
+		if ((riskOverviewTabData.get(Constants.RiskOverviewFields.get(0)) != null)) {
+			Project.ExecuteRow(driver, strConfig, "CBO_RiskOverview_NewOrRenewal_Classification",
+					riskOverviewTabData.get(Constants.RiskOverviewFields.get(0)));
+		}
+		// DEPARTMENT
+		// ---- Select Department Option from the Dropdown
+		Project.ExecuteRow(driver, strConfig, "DDO_RiskOverview_Department", "Click");
+		CommonLib.smallDelay();
+		CommonLib.WaitForElement(driver, strConfig, "DTI_RiskOverview_Department");
+		
+		Project.ExecuteRow(driver, strConfig, "DTI_RiskOverview_Department",
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(1)));
+
+		// AGENT/CLIENT
+		// ---- Enter Agent/Client Name in the Text Input Field [DATA FROM EXCEL]
+		Project.ExecuteRow(driver, strConfig, "TXT_RiskOverview_AgentOrClient",
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(2)));
+		CommonLib.smallDelay();
+
+		// ---- Wait for the Agent/Client Name and Account No Combination Options to
+		// display [DATA FROM EXCEL]
+		CommonLib.WaitForElement(driver, strConfig, String.format(
+				Constants.agentOrClient_SearchText_Output_XPATH,
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(2)),
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(3))));
+
+		// ---- Click on the desired option for Agent/Client Name and Account No
+		// Combination [DATA FROM EXCEL]
+		WebElement agentOrClient_SearchTxt_Output = driver.findElement(By.xpath(String.format(
+				Constants.agentOrClient_SearchText_Output_XPATH,
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(2)),
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(3)))));
+		
+		common.JSClick(driver, strConfig, agentOrClient_SearchTxt_Output);
+		
+		
+		// DIRECT INSURED PLACEMENT OR REINSURANCE
+		if ( ((riskOverviewTabData.get(Constants.RiskOverviewFields.get(5)) == null)
+				|| (riskOverviewTabData.get(Constants.RiskOverviewFields.get(5)).trim().contentEquals("No"))) && 
+				((riskOverviewTabData.get(Constants.RiskOverviewFields.get(7)) == null)
+				|| (riskOverviewTabData.get(Constants.RiskOverviewFields.get(7)).trim().contentEquals("No"))) ) {
+			
+			if(!(riskOverviewTabData.get(Constants.RiskOverviewFields.get(4)) == null)) {
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskOverview_Insured_Or_DirectInsured_Or_OriginalInsured",
+					riskOverviewTabData.get(Constants.RiskOverviewFields.get(4)));
+			}
+		}
+		
+		else if ((riskOverviewTabData.get(Constants.RiskOverviewFields.get(5)) != null)
+				|| (riskOverviewTabData.get(Constants.RiskOverviewFields.get(5)).trim().contentEquals("Yes"))) {
+			
+			Project.ExecuteRow(driver, strConfig, "CHK_RiskOverview_DirectInsured_Placement_ONOFF_Switch", "Click");
+			
+			//This Logic needs to be clarified from BA or Dev
+			// Since this is already populated when Direct Insured is Switched ON and the value cannot be verified with Agent/Client entered previously
+			if (!(riskOverviewTabData.get(Constants.RiskOverviewFields.get(6)) == null)) {
+				Project.ExecuteRow(driver, strConfig, "TXT_RiskOverview_Insured_Or_DirectInsured_Or_OriginalInsured",
+						riskOverviewTabData.get(Constants.RiskOverviewFields.get(6)));
+			}
+		}
+
+		else if ((riskOverviewTabData.get(Constants.RiskOverviewFields.get(7)) != null)
+				|| (riskOverviewTabData.get(Constants.RiskOverviewFields.get(7)).trim().contentEquals("Yes"))) {
+
+			Project.ExecuteRow(driver, strConfig, "CHK_RiskOverview_Reinsurance_ONOFF_Switch", "Click");
+			//This Logic needs to be clarified from BA or Dev
+			if(!(riskOverviewTabData.get(Constants.RiskOverviewFields.get(8)) == null)) {
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskOverview_Insured_Or_DirectInsured_Or_OriginalInsured",
+					riskOverviewTabData.get(Constants.RiskOverviewFields.get(8)));
+			}
+			
+			//This Logic needs to be clarified from BA or Dev
+			if(!(riskOverviewTabData.get(Constants.RiskOverviewFields.get(9)) == null)) {
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskOverview_Reinsured",
+					riskOverviewTabData.get(Constants.RiskOverviewFields.get(9)));
+			}
+
+		}
+		
+		
+		// ACCOUNT EXECUTIVE
+		// ---- Select Account Executive Option from the Dropdown
+		Project.ExecuteRow(driver, strConfig, "DDO_RiskOverview_AccountExecutive", "Click");
+		CommonLib.smallDelay();
+		 CommonLib.WaitForElement(driver, strConfig, "DTI_RiskOverview_AccountExecutive");
+		// ---- Select Account Executive Option from the Dropdown [DATA FROM EXCEL]
+		Project.ExecuteRow(driver, strConfig, "DTI_RiskOverview_AccountExecutive",
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(10)));
+
+		// INTERNAL BROKER
+		// ---- Select Internal Broker Option from the Dropdown
+		Project.ExecuteRow(driver, strConfig, "DDO_RiskOverview_InternalBroker", "Click");
+		CommonLib.smallDelay();
+		CommonLib.WaitForElement(driver, strConfig, "DTI_RiskOverview_InternalBroker");
+		// ---- Select Account Executive Option from the Dropdown [DATA FROM EXCEL]
+		Project.ExecuteRow(driver, strConfig, "DTI_RiskOverview_InternalBroker",
+				riskOverviewTabData.get(Constants.RiskOverviewFields.get(11)));
+
+		// SAVE BUTTON
+		Project.ExecuteRow(driver, strConfig, "BTN_Save", "Click");
+		CommonLib.WaitForElement(driver, strConfig, "BTN_Save");
+		CommonLib.waitForLoad(driver, strConfig);
+		
+		// RISK TRACKER REF NUMBER
+		riskTrackerRefNum = RTData.getRiskTracker_RefNo(driver, strConfig, Constants.riskTrackerRefNo_XPATH);
+		
+		return riskTrackerRefNum;
+					
+				}
+	
+	
+		public static void verify_RiskOverview_TabAfter_RiskGeneration(RemoteWebDriver driver,String strConfig) {
+
+			CommonLib.waitForPageLoad(driver, strConfig);
+			
+			// RISK DETAILS TAB
+			CommonLib.WaitForElement(driver, strConfig, "LN_MenuItem_RiskDetails");
+
+			// INSTRUCTIONS SHEET TAB
+			CommonLib.WaitForElement(driver, strConfig, "LN_MenuItem_InstructionsSheet");
+		
+			// UMR Check Field is empty and Disabled
+			WebElement UMRTxtEle = repository.GetObject(driver, strConfig, "TXT_RiskOverview_UMR");
+			System.out.println("UMRTxtEle.isEnabled()" + UMRTxtEle.isEnabled());
+			if (UMRTxtEle.isEnabled()) {
+				CommonLib.getLogger(strConfig).info("FAIL: UMR Text Input Field is enabled after Risk Creation");
+				TestReporter.Fail(driver, strConfig, "UMR Text Input Field",
+						"Enabled on Risk Overview tab after Risk Creation");
+			} else {
+				CommonLib.getLogger(strConfig).info("PASS: UMR Text Input Field is disabled after Risk Creation");
+				TestReporter.Pass(driver, strConfig, "UMR Text Input Field",
+						"disabled on Risk Overview tab after Risk Creation");
+			}
+		
+			System.out.println(
+					"UMRTxtEle.getText() != null && !UMRTxtEle.getText().trim().isEmpty()" + UMRTxtEle.getText() != null
+							&& !UMRTxtEle.getText().trim().isEmpty());
+			if (UMRTxtEle.getText() != null && !UMRTxtEle.getText().trim().isEmpty()) {
+				CommonLib.getLogger(strConfig).info(
+						"FAIL: UMR Text Input Field is not empty/UMR is populated in UMR Text Input Field after Risk Generation");
+				TestReporter.Fail(driver, strConfig, "UMR Text Input Field",
+						"Not empty/Has value after Risk Generation");
+			} else {
+				CommonLib.getLogger(strConfig).info(
+						"PASS: UMR Text Input Field is empty/UMR is not populated in UMR Text Input Field after Risk Generation");
+				TestReporter.Pass(driver, strConfig, "UMR Text Input Field", "Empty after Risk Generation");
+
+			}
+			// Check the presence of below elements after a new Risk is generated
+
+			// RISK TRACKER REF LABEL
+			WebElement riskRefNo = driver.findElement(By.xpath(Constants.riskTrackerRefNo_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, riskRefNo);
+
+			// AGENT/CLIENT TEXT FIELD INPUT
+			WebElement agentOrClientTxtEle = repository.GetObject(driver, strConfig, "TXT_AgentOrClient_Disabled");
+			System.out.println("agentOrClientTxtEle.isEnabled()" + agentOrClientTxtEle.isEnabled());
+			if (agentOrClientTxtEle.isEnabled()) {
+				CommonLib.getLogger(strConfig).info("FAIL: Agent or Client Field is enabled after Risk Generation");
+				TestReporter.Fail(driver, strConfig, "Agent/Client Field",
+						"Enabled on Risk Overview tab after Risk Creation");
+			} else {
+				CommonLib.getLogger(strConfig)
+						.info("PASS: Agent or Client Field disabled on Risk Overview Tab after Risk Creation");
+				TestReporter.Pass(driver, strConfig, "Agent or Client Field",
+						"Is disabled on Risk Overview Tab after Risk Creation");
+
+			}
+
+			// ------------------Verify Action buttons---------------------------
+
+			// NTU Button is visible and clickable
+			CommonLib.WaitForElement(driver, strConfig, "BTN_Actions_NTU");
+
+			// DMS DOCUMENTS Button is visible and clickable
+			CommonLib.WaitForElement(driver, strConfig, "BTN_Actions_Dms_Documents");
+
+			// FIRM ORDER Button is visible but disabled
+			WebElement btnFirmOrder = repository.GetObject(driver, strConfig, "BTN_Actions_FirmOrder");
+			CommonLib.waitForElementVisibility(driver, strConfig, btnFirmOrder);
+			if (btnFirmOrder.isEnabled()) {
+				CommonLib.getLogger(strConfig)
+						.info("FAIL: Firm Order Button enabled on Risk Overview Tab immediately after Risk Creation");
+				TestReporter.Fail(driver, strConfig, "Firm Order button",
+						"Enabled immediately on Risk Overview Tab after Risk Creation");
+			} else {
+				CommonLib.getLogger(strConfig)
+						.info("PASS: Firm Order Button disabled on Risk Overview Tab after Risk Creation");
+				TestReporter.Pass(driver, strConfig, "Firm Order button",
+						"Is visible and disabled on Risk Overview Tab after Risk Creation");
+
+			}
+
+			// SUBMIT TO ADMIN Button is visible but disabled
+			WebElement btnSubmitToAdmin = repository.GetObject(driver, strConfig, "BTN_Actions_SubmitTo_Admin");
+			CommonLib.waitForElementVisibility(driver, strConfig, btnSubmitToAdmin);
+			if (btnSubmitToAdmin.isEnabled()) {
+				CommonLib.getLogger(strConfig).info(
+						"FAIL: Submit to Admin Button enabled on Risk Overview Tab immediately after Risk Creation");
+				TestReporter.Fail(driver, strConfig, "Submit to Admin button enabled",
+						"Enabled on Risk Overview Tab after Risk Creation");
+			}
+
+			else {
+				CommonLib.getLogger(strConfig).info(
+						"PASS: Submit to Admin Button disabled on Risk Overview Tab immediately after Risk Creation");
+				TestReporter.Pass(driver, strConfig, "Submit to Admin button",
+						"Is visible and disabled on Risk Overview Tab after Risk Creation");
+
+			}
+
+			// ------------------Verify Stage Checked and Unchecked & Date Populated if
+			// Checked-------------------
+			WebElement createdChecked = driver
+					.findElement(By.xpath(Constants.riskOverview_Created_StageIcon_Checked_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, createdChecked);
+
+			WebElement NBIUnchecked = driver
+					.findElement(By.xpath(Constants.riskOverview_NBI_StageIcon_UnChecked_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, NBIUnchecked);
+
+			WebElement QuoteUnchecked = driver
+					.findElement(By.xpath(Constants.riskOverview_Quote_StageIcon_UnChecked_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, QuoteUnchecked);
+
+			WebElement FirmOrder_Unchecked = driver
+					.findElement(By.xpath(Constants.riskOverview_FirmOrder_StageIcon_UnChecked_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, FirmOrder_Unchecked);
+
+			WebElement SubmittedTo_Admin_Unchecked = driver
+					.findElement(By.xpath(Constants.riskOverview_SubmittedTo_Admin_StageIcon_UnChecked_XPATH));
+			CommonLib.waitForElementVisibility(driver, strConfig, SubmittedTo_Admin_Unchecked);
+
+			// ---------------Verify Date Populated against Created Date Field------------
+			WebElement riskCreatedDateEle = driver
+					.findElement(By.xpath(Constants.riskOverview_Created_Stage_CurrentDate_Populated_XPATH));
+			String riskCreatedDate = riskCreatedDateEle.getText();
+
+			if (riskCreatedDate.trim().contentEquals(RTData.getCurrentStageDate())) {
+				CommonLib.getLogger(strConfig)
+						.info("PASS: Created Date visible upon Risk Creation in Risk Overview Tab");
+				TestReporter.Pass(driver, strConfig, "Created Date: ",
+						"Date visible upon Risk Creation in Risk Overview Tab");
+			}
+
+			else {
+				CommonLib.getLogger(strConfig)
+						.info("FAIL: Created Date not visible upon Risk Creation in Risk Overview Tab");
+				TestReporter.Fail(driver, strConfig, "Created Date: ",
+						"Date not visible upon Risk Creation in Risk Overview Tab");
+
+			}
+	}
+		
+		
+		
+		public static void saveRiskDetailsTab(RemoteWebDriver driver, String strConfig) {
+			String riskTrackerRefNum = null;
+
+			CommonLib.getLogger(strConfig).info("Inside saveRiskDetailsTab");
+
+			CommonLib.WaitForElement(driver, strConfig, "LN_MenuItem_RiskDetails");
+
+			LinkedHashMap<String, String> riskDetailsTabData = RTData.getRiskDetailsData();
+			
+			System.out.println(""+riskDetailsTabData.get(0));
+			System.out.println(""+riskDetailsTabData.get(1));
+			System.out.println(""+riskDetailsTabData.get(2));
+			System.out.println(""+riskDetailsTabData.get(3));
+			System.out.println(""+riskDetailsTabData.get(4));
+			System.out.println(""+riskDetailsTabData.get(5));
+			System.out.println(""+riskDetailsTabData.get(6));
+			System.out.println(""+riskDetailsTabData.get(7));
+			System.out.println(""+riskDetailsTabData.get(8));
+			System.out.println(""+riskDetailsTabData.get(9));
+			System.out.println(""+riskDetailsTabData.get(10));
+			System.out.println(""+riskDetailsTabData.get(11));
+			System.out.println(""+riskDetailsTabData.get(12));
+
+			
+			// Click on the Risk Details Menu Item
+			Project.ExecuteRow(driver, strConfig, "LN_MenuItem_RiskDetails", "Click");
+			CommonLib.waitForLoad(driver, strConfig);
+			CommonLib.waitForElementVisibility(driver, strConfig, repository.GetObject(driver, strConfig, "BTN_NBI"));
+			
+			//This field is for release 2.1 and will be removed in release 2.2
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_PolicyType", "Test Policy");
+
+			
+			/*-------Major and Minor Class of Business will be going in Release 2.2----*/	
+			/*-------COMMENTING TEMPORARILY----*/
+			
+			/*
+			// MAJOR CLASS OF BUSINESS
+			// ---- Select Major Class of Business Option from the Dropdown [DATA FROM EXCEL]
+			CommonLib.WaitForElement(driver, strConfig, "DDO_RiskDetails_MajorClass_OfBusiness");
+
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(0)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(2)).trim().isEmpty())
+					&& riskDetailsTabData.get(Constants.RiskDetailsFields.get(0)).trim().contentEquals("Yes")) {
+
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MajorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness");
+
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness",
+						Constants.MajorClassOfBusiness.get(0));
+				
+				// MINOR CLASS OF BUSINESS
+				// ---- Select Minor Class of Business Option from the Dropdown [DATA FROM EXCEL]
+				CommonLib.waitForLoad(driver, strConfig);
+				CommonLib.WaitForElement(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness");
+				
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness");
+
+				if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(3))!= null
+						&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(3)).trim().isEmpty())){
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness",
+						riskDetailsTabData.get(Constants.RiskDetailsFields.get(3)));
+				}
+				else {
+					CommonLib.getLogger(strConfig)
+					.info("FAIL: Minor Class not selected for Major Class Aviation in RTTestData.xlsx file");
+			TestReporter.Fail(driver, strConfig, "Minor Class for Major Class Aviation ",
+					"Not Selected in RTTestData.xlsx file");
+				}
+
+			}
+
+			else if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(1)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(1)).trim().isEmpty())
+					&& riskDetailsTabData.get(Constants.RiskDetailsFields.get(1)).trim().contentEquals("Yes")) {
+
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MajorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness");
+
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness",
+						Constants.MajorClassOfBusiness.get(1));
+				
+				// MINOR CLASS OF BUSINESS
+				// ---- Select Minor Class of Business Option from the Dropdown [DATA FROM EXCEL]
+				CommonLib.waitForLoad(driver, strConfig);
+				CommonLib.WaitForElement(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness");
+				
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness");
+
+				if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(4)) != null 
+						&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(4)).trim().isEmpty())){
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness",
+						riskDetailsTabData.get(Constants.RiskDetailsFields.get(4)));
+				}
+				else {
+					CommonLib.getLogger(strConfig)
+					.info("FAIL: Minor Class not selected for Major Class Marine in RTTestData.xlsx file");
+			TestReporter.Fail(driver, strConfig, "Minor Class for Major Class Marine ",
+					"Not Selected in RTTestData.xlsx file");
+				}
+
+			}
+
+			else if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(2)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(2)).trim().isEmpty())
+					&& riskDetailsTabData.get(Constants.RiskDetailsFields.get(2)).trim().contentEquals("Yes")) {
+
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MajorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness");
+
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MajorClass_OfBusiness",
+						Constants.MajorClassOfBusiness.get(2));
+				
+				// MINOR CLASS OF BUSINESS
+				// ---- Select Minor Class of Business Option from the Dropdown [DATA FROM EXCEL]
+				CommonLib.waitForLoad(driver, strConfig);
+				CommonLib.WaitForElement(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness");
+				
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_MinorClass_OfBusiness", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness");
+
+				if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(5)) != null
+						&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(5)).trim().isEmpty())){
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_MinorClass_OfBusiness",
+						riskDetailsTabData.get(Constants.RiskDetailsFields.get(5)));
+				}
+				else {
+					CommonLib.getLogger(strConfig)
+					.info("FAIL: Minor Class not selected for Major Class Non Marine in RTTestData.xlsx file");
+			TestReporter.Fail(driver, strConfig, "Minor Class for Major Class Non Marine ",
+					"Not Selected in RTTestData.xlsx file");
+				}
+
+			}
+			*/
+			
+			
+			// PREMIUM CURRENCY CODE - running fine
+			// ---- Select Premium Currency Code Option from the Dropdown [DATA FROM EXCEL]
+			CommonLib.waitForLoad(driver, strConfig);
+			CommonLib.WaitForElement(driver, strConfig, "DDO_RiskDetails_PremiumCurrency_Code");
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(6)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(6)).trim().isEmpty())) {
+
+				Project.ExecuteRow(driver, strConfig, "DDO_RiskDetails_PremiumCurrency_Code", "Click");
+				CommonLib.smallDelay();
+				CommonLib.WaitForElement(driver, strConfig, "DTI_RiskDetails_PremiumCurrency_Code");
+
+				Project.ExecuteRow(driver, strConfig, "DTI_RiskDetails_PremiumCurrency_Code",
+						riskDetailsTabData.get(Constants.RiskDetailsFields.get(6)));
+			} else {
+				CommonLib.getLogger(strConfig).info("INFO: Premium Currency Code not selected in RTTestData.xlsx file. "
+						+ "Hence default value 'UNITED STATES DOLLAR (USD)' retained");
+				TestReporter.Fail(driver, strConfig, "Premium Currency Code : ", "Not Selected in RTTestData.xlsx file."
+						+ " Hence default value 'UNITED STATES DOLLAR (USD)' retained");
+			}
+			
+			//LIMIT
+			// ---- Enter Limit in the Text Input Field [DATA FROM EXCEL]
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(7)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(7)).trim().isEmpty())) {
+				System.out.println("Terms"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(7)));
+				Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_Limit",
+						riskDetailsTabData.get(Constants.RiskDetailsFields.get(7)));
+			} 
+			
+			//DEDUCTIBLE
+			// ---- Enter Deductible in the Text Input Field [DATA FROM EXCEL]
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(9)) != null 
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(9)).trim().isEmpty())) {
+				System.out.println("Deductible"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(9)));
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_Deductible",
+					riskDetailsTabData.get(Constants.RiskDetailsFields.get(9)));
+			} 
+
+			//PREMIUM
+			// ---- Enter Premium in the Text Input Field [DATA FROM EXCEL]
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(8)) != null 
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(8)).trim().isEmpty())) {
+				System.out.println("Premium"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(8)));
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_Premium",
+					riskDetailsTabData.get(Constants.RiskDetailsFields.get(8)));
+			} 
+			
+			
+			
+			//CLIENT COMMISSION
+			// ---- Enter Client Commission in the Text Input Field [DATA FROM EXCEL]
+		/*	if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(10)) != null
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(10)).trim().isEmpty())) {
+
+				if (Integer.parseInt(riskDetailsTabData.get(Constants.RiskDetailsFields.get(10))) >= 10
+						&& Integer.parseInt(riskDetailsTabData.get(Constants.RiskDetailsFields.get(10))) <= 35) {
+					System.out.println("Client Commission"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(10)));
+					Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_ClientCommission",
+							riskDetailsTabData.get(Constants.RiskDetailsFields.get(10)));
+					//CommonLib.smallDelay();
+				} else {
+					CommonLib.getLogger(strConfig).info(
+							"FAIL: Client Commission must be between 10% and 35% and supplied value in RTTestData.xlsx file does not lie in this range");
+					TestReporter.Fail(driver, strConfig, "Client Commission: ",
+							"Must be between 10% and 35% and supplied value in RTTestData.xlsx file does not lie in this range");
+				}
+			} 
+			*/
+			
+			
+			//INFORMATION
+			// ---- Enter Information in the TextArea Input Field [DATA FROM EXCEL]
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(11)) != null 
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(11)).trim().isEmpty())) {
+				System.out.println("Info"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(11)));
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_Deductible",
+					riskDetailsTabData.get(Constants.RiskDetailsFields.get(11)));
+			}
+			
+			//TERMS
+			// ---- Enter Terms in the TextArea Input Field [DATA FROM EXCEL]
+			if (riskDetailsTabData.get(Constants.RiskDetailsFields.get(12)) != null 
+					&& !(riskDetailsTabData.get(Constants.RiskDetailsFields.get(12)).trim().isEmpty())) {
+				System.out.println("Terms"+riskDetailsTabData.get(Constants.RiskDetailsFields.get(12)));
+			Project.ExecuteRow(driver, strConfig, "TXT_RiskDetails_ClientCommission",
+					riskDetailsTabData.get(Constants.RiskDetailsFields.get(12)));
+			}
+			
+			
+			// SAVE BUTTON
+			Project.ExecuteRow(driver, strConfig, "BTN_Save", "Click");
+			CommonLib.WaitForElement(driver, strConfig, "BTN_Save");
+			CommonLib.waitForLoad(driver, strConfig);
+			
+			CommonLib.highDelay();
+						
+					}
+	
+	
+		public static void verifyRiskDetailsDefaultPopulatedFields(RemoteWebDriver driver, String strConfig) {
+			
+		}
+		
+		public static void verifyRiskDetailsMandatoryFields(RemoteWebDriver driver, String strConfig) {
+			
+		}
+		
+		
+		public static void logoutRiskTracker(RemoteWebDriver driver, String strConfig) {
+		CommonLib.WaitForElement(driver, strConfig, "LN_Logout_IntegroAccount");
+		Project.ExecuteRow(driver, strConfig, "LN_Logout_IntegroAccount", "Click");
+		
+		
+
+	}
+	
+
+
+
+}
+	
+	
+	
+	

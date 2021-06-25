@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="RT2" parallel="classes">
+
+	<test thread-count="4" name="Regression_Suite" parallel="classes">
+		<classes>
+			<class name="tests.Test1" />
+			<class name="tests.Test2" />
+			<class name="tests.Test3" />
+			<class name="tests.Test4" />
+			<class name="tests.Test5" />
+		</classes>
+	</test>
+	<test name="send_Mail" enabled="true">
+		<classes>
+			<class name="tests.send_Mail" />
+		</classes>
+	</test>
+
+	<!-- Test -->
+</suite> <!-- RT2 -->

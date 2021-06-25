@@ -1,0 +1,190 @@
+package libraries;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class Constants {
+
+	//-------------RT constants---------------//
+	public static String strRTURL = null;
+	public static String strEnvironment = null;
+	public static String strScreenShots = null;
+	public static String strAutomationReportReceiver = null;
+
+	
+	public static Integer intSmallDelay = 2000;
+	public static Integer intMediumDelay = 5000;
+	public static Integer intHighDelay = 10000;
+	public static Integer intMaxAttempts = 10; 
+	
+	public static String riskTrackerRefNo_XPATH = "//h3[text()='Risk Tracker:']/span";
+	
+	public static String agentOrClient_SearchText_Output_XPATH = "//*[text()='Agent/Client']//ancestor::label/ancestor::div/following-sibling::div//*[text()='%s']/ancestor::div/following-sibling::div/*[text()='%s']";
+	
+	//----Currently Not Used-----
+	public static String riskOverviewStatus_XPATH = "//*[@id='StatusCard']//*[text()='Status']";
+	public static String riskOverviewStageTitle_XPATH = "//*[@id='StatusCard']//*[text()='Stage Title:']";
+	public static String riskOverviewActionDate_XPATH = "//*[@id='StatusCard']//*[text()='Action Date:']";
+	
+	public static String riskOverview_StageTitle_Created_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//*[text()='Created']";
+	public static String riskOverview_StageTitle_NBI_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//*[text()='NBI']";
+	public static String riskOverview_StageTitle_Quote_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//*[text()='Quote']";
+	public static String riskOverview_StageTitle_FirmOrder_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//span[text()='Firm Order']";
+	public static String riskOverview_StageTitle_SubmittedTo_Admin_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//*[text()='Submitted to Admin']";
+	public static String riskOverview_StageTitle_NTU_XPATH = "//*[text()='Stage Title:']//ancestor::*/following-sibling::*//*[text()='Created']";
+	//----Currently Not Used-----
+	
+	
+	public static String riskOverview_AgentOrClient_Disabled_XPATH = "//*[text()='Agent/Client']/ancestor::label/following-sibling::div//input[@type='search']";
+	
+	//------- Stage Icon Checked and Unchecked -> Risk Overview Tab
+	public static String riskOverview_Created_StageIcon_Checked_XPATH = "//*[text()='Created']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'check')]";
+	public static String riskOverview_Created_StageIcon_UnChecked_XPATH = "//*[text()='Created']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'remove')]";
+	
+	public static String riskOverview_NBI_StageIcon_Checked_XPATH = "//*[text()='NBI']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'check')]";
+	public static String riskOverview_NBI_StageIcon_UnChecked_XPATH = "//*[text()='NBI']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'remove')]";
+	
+	public static String riskOverview_Quote_StageIcon_Checked_XPATH = "//*[text()='Quote']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'check')]";
+	public static String riskOverview_Quote_StageIcon_UnChecked_XPATH = "//*[text()='Quote']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'remove')]";
+	
+	public static String riskOverview_FirmOrder_StageIcon_Checked_XPATH = "//*[text()='Firm Order']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'check')]";
+	public static String riskOverview_FirmOrder_StageIcon_UnChecked_XPATH = "//*[text()='Firm Order']/ancestor::*/preceding-sibling::div[contains(@class,'status-line')]//i[contains(@class,'remove')]";
+	
+	public static String riskOverview_SubmittedTo_Admin_StageIcon_Checked_XPATH = "//*[text()='Submitted to Admin']/ancestor::*/preceding-sibling::div[contains(@style,'z-index')]//i[contains(@class,'check')]";
+	public static String riskOverview_SubmittedTo_Admin_StageIcon_UnChecked_XPATH = "//*[text()='Submitted to Admin']/ancestor::*/preceding-sibling::div[contains(@style,'z-index')]//i[contains(@class,'remove')]";
+	
+	public static String riskOverview_NTU_StageIcon_Checked_XPATH = "//*[text()='NTU']/ancestor::*/preceding-sibling::div[contains(@style,'z-index')]//i[contains(@class,'check')]";
+	//------- Stage Icon Checked and Unchecked -> Risk Overview Tab
+	
+	//------- Date Populated against the Stage -> Risk Overview Tab
+	public static String riskOverview_Created_Stage_CurrentDate_Populated_XPATH = "//*[text()='Created']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	public static String riskOverview_NBI_Stage_CurrentDate_Populated_XPATH = "//*[text()='NBI']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	public static String riskOverview_Quote_Stage_CurrentDate_Populated_XPATH = "//*[text()='Quote']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	public static String riskOverview_FirmOrder_Stage_CurrentDate_Populated_XPATH = "//*[text()='Firm Order']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	public static String riskOverview_SubmitToAdmin_Stage_CurrentDate_Populated_XPATH = "//*[text()='Submitted to Admin']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	public static String riskOverview_NTU_Stage_CurrentDate_Populated_XPATH = "//*[text()='NTU']/ancestor::div/following-sibling::div[contains(@style,'text-align: right')]//span";
+	//------- Date Populated against the Stage -> Risk Overview Tab
+	
+	public static List<String> RiskOverviewFields = Arrays.asList("NewOrRenewalClassification", "Department",
+			"AgentOrClient", "AgentOrClient_AccountNo","Insured", "DirectInsuredPlacement","DirectInsured", "Reinsurance", 
+			"OriginalInsured","Reinsured", "AccountExecutive", "InternalBroker");
+	
+	public static List<String> RiskDetailsFields = Arrays.asList("MajorClassOfBusiness", "MinorClassOfBusiness",
+			"PremiumCurrencyCode", "Limit","Premium", "Deductible","ClientCommission", "Information", 
+			"Terms");
+	
+	public static List<String> NewOrRenewalClassification = Arrays.asList(" (Not selected)", "New Policy (New)",
+			"Cross-selling Policy (New)", "Renewal Policy (Renewal)",
+			"Up-selling Policy (Renewal with additional coverage/CoB)",
+			"Down-selling (Renewal with reduced coverage/CoB)");
+	
+	public static List<String> Department = Arrays.asList("Aviation (AV)","Casualty_integro Conversion (IM)",
+			"Construction (CF)", "Entertainment Contingency (EC)", "ERM - Entertainment Risk Mangement (ER)",
+			"HPAK/CPB (XL)","International P&C (IF)","International Treaty (YT)","Management Risk (MR)",
+			"Marine (MA)","Marine (MF)","North American (NA)","Property & Casualty (E&S) (PC)","Property & Casualty (YF)",
+			"Property_integro Conversion (TM)","Reinsurance_integro Conversion (TR)","Schemes (SM)","Speciality (SY)",
+			"Sport (SP)","T-Pro (TP)","Terrorism (PV)","Tysers Reinsurance (YR)", "UK Corporate Commercial (CI)");
+	
+	public static List<String> MinorClassOfBusiness = Arrays.asList(" (Not selected)", "New Policy (New)",
+			"Cross-selling Policy (New)", "Renewal Policy (Renewal)",
+			"Up-selling Policy (Renewal with additional coverage/CoB)",
+			"Down-selling (Renewal with reduced coverage/CoB)");
+	
+	
+	public static List<String> MajorClassOfBusiness = Arrays.asList(" (Not selected)", "New Policy (New)",
+			"Cross-selling Policy (New)", "Renewal Policy (Renewal)",
+			"Up-selling Policy (Renewal with additional coverage/CoB)",
+			"Down-selling (Renewal with reduced coverage/CoB)");
+
+	public XSSFWorkbook O_workbook = null;
+	public InputStream O_XLSXfiletoread = null;
+	public static boolean timeCapture = false;
+	
+	public static String strErrorScreenshot = "Yes";
+	
+	public static LinkedHashMap<Long, String> DefaultDO_GridDetails = new LinkedHashMap<Long, String>();
+	
+	public static LinkedHashMap<String, String> DefaultDO_HomePage = new LinkedHashMap<String, String>();
+
+	//----------Not used at the moment --- Also commented on Page Classes------------------
+	public static LinkedHashMap<String, String> getDefaultDO_HomePage() {
+			return DefaultDO_HomePage;
+		}
+		
+	public void init_DefaultDO_HomePage() {
+			LinkedHashMap<String, String> defaultDO_HomePage_Local = getDefaultDO_HomePage();
+			defaultDO_HomePage_Local.put("strDOName", "DefaultDO_HomePage");
+		defaultDO_HomePage_Local.put("BR_verifyElementsDisplayed", "True");				
+			setDefaultDO_HomePage(defaultDO_HomePage_Local);
+		}	
+		
+	public static void setDefaultDO_HomePage(LinkedHashMap<String, String> defaultDO_HomePage) {
+			DefaultDO_HomePage = defaultDO_HomePage;
+		}	
+	//----------Not used at the moment --- Also commented on Page Classes------------------
+	
+	public XSSFWorkbook getOutPutWorkbook(String strFilePathwithName) {
+		try {
+			File file = new File(strFilePathwithName);
+			if (!file.exists()) {
+				O_workbook = new XSSFWorkbook();
+				XSSFSheet outputsheet = O_workbook.createSheet("OutputSheet");
+				outputsheet.createRow(0);
+				XSSFRow headerRow = outputsheet.getRow(0);
+				XSSFCellStyle headerStyle = ReadExcel.getHeaderStyle(O_workbook);
+				String[] arrOutputHeader =  {"TCID", "Status", "RiskTracker_Reference","Summary", "Description", "StartTime"};
+				for (int i = 0; i <= 5; i++) {
+					headerRow.createCell(i);
+					headerRow.getCell(i).setCellValue(arrOutputHeader[i]);
+					headerRow.getCell(i).setCellStyle(headerStyle);
+				}
+				FileOutputStream out = new FileOutputStream(strFilePathwithName);
+				O_workbook.write(out);
+				out.close();
+			} else {
+				O_workbook = new XSSFWorkbook(new FileInputStream(new File(strFilePathwithName)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return O_workbook;
+	}
+
+	public XSSFWorkbook getDriverWorkbook() {
+		XSSFWorkbook d_workbook = null;
+		try {
+			FileInputStream D_XLSXfiletoread = new FileInputStream(ProjectConstants.DRIVEREXCEL);
+			d_workbook = new XSSFWorkbook(D_XLSXfiletoread);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return d_workbook;
+	}
+
+	public XSSFWorkbook getTestDataWorkbook() {
+		XSSFWorkbook i_workbook = null;
+		try {
+			FileInputStream I_XLSXfiletoread = new FileInputStream(ProjectConstants.TESTDATAEXCEL);
+			i_workbook = new XSSFWorkbook(I_XLSXfiletoread);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return i_workbook;
+	}
+	
+}
+	
+	
+	
+	
+	
